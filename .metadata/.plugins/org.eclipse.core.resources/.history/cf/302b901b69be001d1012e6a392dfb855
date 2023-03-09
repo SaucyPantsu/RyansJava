@@ -1,0 +1,23 @@
+package Lab7;
+
+import java.awt.event.*;
+import javax.swing.*;
+
+
+public class screen extends JFrame implements ActionListener{
+	JFrame Frame;
+	JLabel Label, Label2, Label3;
+	JButton Button, Button2, Button3;
+	JTextField Text;
+	
+	public void GUI() {
+		Frame = new JFrame("Program")	;
+		Frame.setSize(600, 900);
+		Frame.setVisible(True);
+		}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+
+}
