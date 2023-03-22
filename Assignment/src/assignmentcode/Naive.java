@@ -19,7 +19,7 @@ public class Naive {
 	double gpgender, gpParent, gpjob, gpArea, gpbusinessStudies, gpentrepreneur;
 	
 	// setting up for probability of entrepreneur calculations
-	int Egender; // 1 female, 0 male
+	int Egender; // 0 female, 1 male
 	int EParent; //1 for parent having business, 0 for no
 	int ejob;// 1 for job, 0 for no
 	int EArea; //1 for rural, 0 for urban
@@ -56,7 +56,7 @@ public class Naive {
 				if(column[5].equals("Yes")) {
 					Eentrepreneur = Eentrepreneur + 1;
 					
-					if(column[0].equals("Female")) {
+					if(column[0].equals("Male")) {
 						Egender = Egender+1;
 					}
 					
@@ -80,7 +80,7 @@ public class Naive {
 				//Not entrepreneur stats
 				else if(column[5].equals("No")) {
 					Nentrepreneur = Nentrepreneur + 1;
-					if(column[0].equals("Female")) {
+					if(column[0].equals("Male")) {
 						gender = gender+1;
 					}
 					
@@ -103,7 +103,6 @@ public class Naive {
 			}
 		} 
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//collating general stats
@@ -143,6 +142,8 @@ public class Naive {
 		
 		//
 		System.out.println(ifEntrepreneur);
+		System.out.println(evidence);
+		System.out.println(probEnt);
 	}
 	
 }
