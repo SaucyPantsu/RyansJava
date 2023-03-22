@@ -40,6 +40,7 @@ public class Naive {
 	double results;
 	double probext;
 	double test;
+	double notEntrepreneur;
 	
 	//configuring naive to use default dataset or a custom one
 	public Naive(String dataset) {
@@ -112,91 +113,98 @@ public class Naive {
 			e.printStackTrace();
 		}
 		//collating general stats
-		this.ggender = gender+Egender;
-		this.gParent = Parent+EParent;
-		this.gjob = ejob+ job;
-		this.gArea = Area+EArea;
-		this.gbusinessStudies = businessStudies+EbusinessStudies;
+		ggender = gender+Egender;
+		gParent = Parent+EParent;
+		gjob = ejob+ job;
+		gArea = Area+EArea;
+		gbusinessStudies = businessStudies+EbusinessStudies;
 		
 		//general probabilities
-		this.gpgender = (double)ggender/linecount;
-		this.gpParent = (double)gParent/linecount;
-		this.gpjob = (double)gjob/linecount;
-		this.gpArea =(double) gArea/linecount;
-		this.gpbusinessStudies = (double)gbusinessStudies/linecount;
-		this.gpentrepreneur = (double)Eentrepreneur/linecount;
+		gpgender = (double)ggender/linecount;
+		gpParent = (double)gParent/linecount;
+		gpjob = (double)gjob/linecount;
+		gpArea =(double) gArea/linecount;
+		gpbusinessStudies = (double)gbusinessStudies/linecount;
+		gpentrepreneur = (double)Eentrepreneur/linecount;
 		
 		//obtaining entrepreneur probabilities
-		this.epgender = (double)Egender/Eentrepreneur;
-		this.epParent =(double) EParent/Eentrepreneur;
-		this.epJob =(double) ejob/Eentrepreneur;
-		this.epArea = (double)EArea/Eentrepreneur;
-		this.epbusinessStudies =(double) EbusinessStudies/Eentrepreneur;
+		epgender = (double)Egender/Eentrepreneur;
+		epParent =(double) EParent/Eentrepreneur;
+		epJob =(double) ejob/Eentrepreneur;
+		epArea = (double)EArea/Eentrepreneur;
+		epbusinessStudies =(double) EbusinessStudies/Eentrepreneur;
 		
 		//obtaining not entrepreneur probabilities
-		this.rpgender = (double)gender/Nentrepreneur;
-		this.rpParent = (double)Parent/Nentrepreneur;
-		this.rpJob =(double) job/Nentrepreneur;
-		this.rpArea =(double) Area/Nentrepreneur;
-		this.rpbusinessStudies = (double)businessStudies/Nentrepreneur;
+		rpgender = (double)gender/Nentrepreneur;
+		rpParent = (double)Parent/Nentrepreneur;
+		rpJob =(double) job/Nentrepreneur;
+		rpArea =(double) Area/Nentrepreneur;
+		rpbusinessStudies = (double)businessStudies/Nentrepreneur;
 		
 		//naive bayes calculation
 		
-		this.probEnt = (double)Eentrepreneur/linecount;
-		this.evidence = (double)gpgender*gpParent*gpjob*gpArea*gpbusinessStudies;
-		this.ifEntrepreneur = (double)((epgender*epParent*epJob*epArea*epbusinessStudies*probEnt)/evidence)*evidence;
+		probEnt = (double)Eentrepreneur/linecount;
+		notEntrepreneur = 1-probEnt;
 		
+		ifEntrepreneur = epgender*epParent*epJob*epbusinessStudies*epArea*probEnt;
+		test = rpgender*rpParent*rpJob*rpArea*rpbusinessStudies*notEntrepreneur;
 		//
-		System.out.println(ifEntrepreneur);
-		System.out.println(evidence);
-		System.out.println(probEnt);
-		probabilities("Female", "No", "No", "No", "Rural");
-		System.out.println(results);
+		
+		//System.out.println(probEnt);
+		probabilities("Female", "No", "No", "Yes", "Urban"); //no
+		
+		if(probext<ifEntrepreneur) {
+			System.out.println("This person is not likely to be an entrepreneur");
+		}
+		else
+		{
+			System.out.println("This person is likely to be an entrepreneur");
+		}
 	}
+	
+	
 	public void probabilities(String gender, String parent, String job, String business, String Area){
 		
 		if(gender.equals("Male"))
 		{
-			this.extgender = this.gpgender;
+			extgender = epgender;
 		}
 		else{
-			this.extgender = 1-gpgender;
+			extgender = 1-epgender;
 		}
 
 		if(parent.equals("Yes"))
 		{
-			this.extParent = this.gpParent;
+			extParent = epParent;
 		}
 		else{
-			this.extParent = 1 - gpParent;
+			extParent = 1 - epParent;
 		}
 
 		if(job.equals("Yes"))
 		{
-			this.extJob = this.gpjob;
+			extJob = epJob;
 		}
 		else{
-			this.extJob = 1- gpjob;
+			extJob = 1- epJob;
 		}
 
 		if(business.equals("Yes"))
 		{
-			this.extBusiness = this.gpbusinessStudies;
+			extBusiness = epbusinessStudies;
 		}
 		else{
-			this.extBusiness = 1-gpbusinessStudies;
+			extBusiness = 1-epbusinessStudies;
 		}
 		if(business.equals("Rural"))
 		{
-			this.extArea = this.gpArea;
+			extArea = epArea;
 		}
 		else{
-			this.extArea = 1-gpArea;
+			extArea = 1-epArea;
 		}
 
-		probext = extgender*extBusiness*extJob*extParent*extArea;
-
-		results =((probext*probEnt)/this.evidence)*this.evidence;
+		probext = extgender*extBusiness*extJob*extParent*extArea*probEnt;
 	}
 	
 }
