@@ -151,8 +151,9 @@ public class Naive {
 		//
 		
 		//System.out.println(probEnt);
-		probabilities("Female", "No", "No", "Yes", "Urban"); //no
-		
+		probabilities("Male", "No", "No", "Yes", "Urban");
+		System.out.println(ifEntrepreneur);
+		System.out.println(probext);
 		if(probext<ifEntrepreneur) {
 			System.out.println("This person is not likely to be an entrepreneur");
 		}
