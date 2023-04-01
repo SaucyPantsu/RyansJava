@@ -6,7 +6,11 @@ import java.math.*;
 public class Naive {
 	//dataset location
 	String dataset;
+	String dataset2;
+	String dataset3;
 	String[] column;
+	String[] column2;
+	String[] column3;
 	int TestSize;
 	int TrainSize;
 	//total number of subjects
@@ -44,14 +48,22 @@ public class Naive {
 	double test;
 	double notEntrepreneur;
 	int count;
+	int errorcount;
+	boolean correctornot;
+	int correctcount;
+	double prob;
+	double accuracy;
 	
 	
 	//configuring naive to use default dataset or a custom one
 	public Naive(String dataset) {
 		this.dataset = dataset;
+		this.dataset2 = dataset;
+		this.dataset3 = dataset;
 	}
 	
 	public void doMyMath() {
+		//math block
 		
 		//collating general stats
 				ggender = gender+Egender;
@@ -91,8 +103,10 @@ public class Naive {
 				test = rpgender*rpParent*rpJob*rpArea*rpbusinessStudies*notEntrepreneur;
 				//
 	}
-	
+
 	public void runGeneralNaive() throws FileNotFoundException {
+		
+		//file reader
 		BufferedReader fileread = new BufferedReader(new FileReader(dataset));
 		try {
 			while((dataset = fileread.readLine()) != null) {
@@ -163,21 +177,25 @@ public class Naive {
 		//testing data
 		
 	}
-	public void runTest(){
+	public boolean runTest(){
+		//test new data against old
 		probabilities("Male", "No", "No", "Yes", "Urban");
 		System.out.println(ifEntrepreneur);
 		System.out.println(probext);
 		if(probext<ifEntrepreneur) {
-			System.out.println("This person is not likely to be an entrepreneur");
+			return false;
 		}
 		else
 		{
-			System.out.println("This person is likely to be an entrepreneur");
+			return true;
 		}
 	}
 
 	public void SelfTest() throws FileNotFoundException{
+		//self tester
 		BufferedReader fileread = new BufferedReader(new FileReader(dataset));
+		BufferedReader fileread2 = new BufferedReader(new FileReader(dataset2));
+		BufferedReader fileread3 = new BufferedReader(new FileReader(dataset3));
 		try {
 			while((dataset = fileread.readLine()) != null) {
 				
@@ -185,74 +203,122 @@ public class Naive {
 
 				if(column[0].equals("Female") || column[0].equals("Male"))
 				{
-					linecount = linecount+1;				}
+					linecount = linecount+1;	
+				}
 			}
+			fileread.close();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		TrainSize = (int) Math.floor((linecount/100)*70);
+		TrainSize = (int) Math.floor(linecount*0.7);
 		TestSize = linecount - TrainSize;
 		
+
 		try {
-			for(count =0; count != TrainSize; count++){
-				fileread.readLine();
-				if(column[5].equals("Yes")) {
-					Eentrepreneur = Eentrepreneur + 1;
-					
-					if(column[0].equals("Male")) {
-						Egender = Egender+1;
+			count = 0;
+			while((dataset2 = fileread2.readLine()) != null) {
+				if(count < TrainSize) {
+					column2 = dataset2.split(",");
+					if(column2[0].equals("Female") || column2[0].equals("Male"))
+					{
+						if(column2[5].equals("Yes")) {
+							Eentrepreneur = Eentrepreneur + 1;
+							
+							if(column2[0].equals("Male")) {
+								Egender = Egender+1;
+							}
+							
+							if(column2[1].equals("Yes")) {
+								EParent = EParent +1;
+							}
+							
+							if(column2[2].equals("Yes")) {
+								ejob = ejob +1;
+							}
+							
+							if(column2[3].equals("Rural")) {
+								EArea = EArea +1;
+							}
+							
+							if(column2[4].equals("Yes")) {
+								EbusinessStudies = EbusinessStudies +1;
+							}
+							
+						}
+						//Not entrepreneur stats
+						else if(column2[5].equals("No")) {
+							Nentrepreneur = Nentrepreneur + 1;
+							if(column2[0].equals("Male")) {
+								gender = gender+1;
+							}
+							
+							if(column2[1].equals("Yes")) {
+								Parent = Parent +1;
+							}
+							
+							if(column2[2].equals("Yes")) {
+								job = job +1;
+							}
+							
+							if(column2[3].equals("Rural")) {
+								Area = Area +1;
+							}
+							
+							if(column2[4].equals("Yes")) {
+								businessStudies = businessStudies +1;
+							}	
+						}				
 					}
-					
-					if(column[1].equals("Yes")) {
-						EParent = EParent +1;
-					}
-					
-					if(column[2].equals("Yes")) {
-						ejob = ejob +1;
-					}
-					
-					if(column[3].equals("Rural")) {
-						EArea = EArea +1;
-					}
-					
-					if(column[4].equals("Yes")) {
-						EbusinessStudies = EbusinessStudies +1;
-					}
-					
+					count++;
 				}
-				//Not entrepreneur stats
-				else if(column[5].equals("No")) {
-					Nentrepreneur = Nentrepreneur + 1;
-					if(column[0].equals("Male")) {
-						gender = gender+1;
-					}
-					
-					if(column[1].equals("Yes")) {
-						Parent = Parent +1;
-					}
-					
-					if(column[2].equals("Yes")) {
-						job = job +1;
-					}
-					
-					if(column[3].equals("Rural")) {
-						Area = Area +1;
-					}
-					
-					if(column[4].equals("Yes")) {
-						businessStudies = businessStudies +1;
-					}
-					
+				else {
+					fileread2.readLine();
 				}
-				doMyMath();
-				
 			}
-		} 
+			doMyMath();
+			
+		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		count = 0;
+		try {
+				while((dataset3 = fileread3.readLine()) != null) {
+					if(count < (TrainSize+3)) {	
+						//code does not work correctly if there is anything in this block
+					}
+					else {
+						column3 = dataset3.split(",");
+						probabilities(column3[0],column3[1],column3[2],column3[4], column3[3]);
+						if(probext < ifEntrepreneur ) {
+							if(column3[5].equals("No")) {
+								correctcount++;
+							}
+							else {
+								errorcount++;
+							}
+						}
+						else if(probext > ifEntrepreneur ) {
+							if(column3[5].equals("Yes")) {
+								correctcount++;
+							}
+							else {
+								errorcount++;
+							}
+						}
+					}
+					count++;
+				}
+			} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		accuracy = (double) correctcount/TestSize;
+		accuracy = accuracy*100;
+		
+		System.out.println("Program accuracy is "+accuracy+"%");
 	}
 
 	public void probabilities(String gender, String parent, String job, String business, String Area){
