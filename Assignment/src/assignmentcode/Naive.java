@@ -5,12 +5,16 @@ import java.math.*;
 
 public class Naive {
 	//dataset location
+	//needed 3 times to allow self test to run everything it needs to correctly
 	String dataset;
 	String dataset2;
 	String dataset3;
+	String dataset4;
 	String[] column;
 	String[] column2;
 	String[] column3;
+	
+	
 	int TestSize;
 	int TrainSize;
 	//total number of subjects
@@ -53,6 +57,7 @@ public class Naive {
 	int correctcount;
 	double prob;
 	double accuracy;
+	double results2;
 	
 	
 	//configuring naive to use default dataset or a custom one
@@ -60,9 +65,10 @@ public class Naive {
 		this.dataset = dataset;
 		this.dataset2 = dataset;
 		this.dataset3 = dataset;
+		this.dataset4 = dataset;
 	}
 	
-	public void doMyMath() {
+	public double doMyMath() {
 		//math block
 		
 		//collating general stats
@@ -101,12 +107,13 @@ public class Naive {
 				
 				ifEntrepreneur = epgender*epParent*epJob*epbusinessStudies*epArea*probEnt;
 				test = rpgender*rpParent*rpJob*rpArea*rpbusinessStudies*notEntrepreneur;
+				return ifEntrepreneur;
 				//
 	}
 
-	public void runGeneralNaive() throws FileNotFoundException {
-		
+	public double runGeneralNaive() throws FileNotFoundException {
 		//file reader
+		reset();
 		BufferedReader fileread = new BufferedReader(new FileReader(dataset));
 		try {
 			while((dataset = fileread.readLine()) != null) {
@@ -167,22 +174,22 @@ public class Naive {
 					}
 				}
 			}
+			fileread.close();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		doMyMath();
-		runTest();
+		results2 = doMyMath();
+		return results2;
 		//System.out.println(probEnt);
 		//testing data
 		
 	}
-	public boolean runTest(){
+	public boolean runTest(String Gender, String Parents, String Job, String Business, String Area ){
 		//test new data against old
-		probabilities("Male", "No", "No", "Yes", "Urban");
-		System.out.println(ifEntrepreneur);
-		System.out.println(probext);
-		if(probext<ifEntrepreneur) {
+		probabilities(Gender, Parents, Job, Business, Area );
+
+		if(probext<results2) {
 			return false;
 		}
 		else
@@ -190,14 +197,53 @@ public class Naive {
 			return true;
 		}
 	}
-
+	
+	public void reset() {
+		//resets all values
+		ggender = 0;
+		gParent = 0;
+		gjob = 0;
+		gArea = 0;
+		gbusinessStudies = 0;
+		gpgender = 0;
+		gpParent = 0;
+		gpjob = 0;
+		gpArea = 0;
+		gpbusinessStudies = 0;
+		gpentrepreneur = 0;
+		epgender = 0;
+		epParent = 0;
+		epJob = 0;
+		epArea =  0;
+		epbusinessStudies = 0;
+		rpgender = 0;
+		rpParent = 0;
+		rpJob = 0;
+		rpArea = 0;
+		rpbusinessStudies =  0;
+		linecount= 0;
+		Eentrepreneur = 0;
+		Egender=0;
+		EParent = 0;
+		ejob = 0;
+		EArea = 0;
+		EbusinessStudies = 0;
+		Nentrepreneur =0;
+		gender =0;
+		Parent =0;
+		job = 0;
+		Area =0;
+		businessStudies =0;
+	}
 	public void SelfTest() throws FileNotFoundException{
+		
+		reset();
 		//self tester
-		BufferedReader fileread = new BufferedReader(new FileReader(dataset));
+		BufferedReader fileread4 = new BufferedReader(new FileReader(dataset4));
 		BufferedReader fileread2 = new BufferedReader(new FileReader(dataset2));
 		BufferedReader fileread3 = new BufferedReader(new FileReader(dataset3));
 		try {
-			while((dataset = fileread.readLine()) != null) {
+			while((dataset = fileread4.readLine()) != null) {
 				
 				column = dataset.split(",");
 
@@ -206,7 +252,7 @@ public class Naive {
 					linecount = linecount+1;	
 				}
 			}
-			fileread.close();
+			fileread4.close();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -277,8 +323,8 @@ public class Naive {
 					fileread2.readLine();
 				}
 			}
-			doMyMath();
-			
+			fileread2.close();
+			doMyMath();	
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -311,12 +357,15 @@ public class Naive {
 					}
 					count++;
 				}
+				fileread3.close();
 			} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 		accuracy = (double) correctcount/TestSize;
 		accuracy = accuracy*100;
+		
+		
 		
 		System.out.println("Program accuracy is "+accuracy+"%");
 	}
